@@ -1,13 +1,6 @@
 const { EmbedBuilder } = require("discord.js")
 
-const levelingItemsEmbed = new EmbedBuilder()
-    .setColor(0x0099ff)
-    .setTitle("Leveling Items Guide")
-    .addFields(
-        { name: "", value: "This is a guide to leveling items and twink leveling" },
-        {
-            name: "Generic Uniques", value: `
-The best leveling pieces in each section (according to me) are in **bold**.
+const LEVELING_MESSAGE = `The best leveling pieces in each section (according to me) are in **bold**.
 ### Chestpieces
 - [Tabula Rasa](https://poewiki.net/wiki/Tabula_Rasa): Provides 6 white linked white sockets and has no level requirement, but also no defences.
 - **[Thousand Ribbons]()**: Doesn't come with 6 linked white sockets, but has a lot of other useful stats for any build.
@@ -35,11 +28,10 @@ The best leveling pieces in each section (according to me) are in **bold**.
 - **[Perandus Signet]()**: The best early-game leveling ring.
 
 WIP
-    `});
-
+`
 module.exports = {
     name: "!!Leveling Items",
     execute(client, message) {
-        message.reply({ embeds: [levelingItemsEmbed] })
+        message.reply(LEVELING_MESSAGE)
     }
 }
