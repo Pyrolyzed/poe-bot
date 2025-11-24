@@ -5,7 +5,7 @@ const WIKI_URL = "https://www.poewiki.net/w/api.php";
 
 
 module.exports = {
-    get: (url) => {
+    get(url) {
         return new Promise((resolve, reject) => {
             let data = "";
 
@@ -27,7 +27,7 @@ module.exports = {
         });
     },
 
-    getPage: async (page) => {
+    async getPage(page) {
         const query = new URLSearchParams({
             action: "opensearch",
             format: "json",
