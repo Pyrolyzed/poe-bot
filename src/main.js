@@ -32,10 +32,10 @@ client.on("messageCreate", async (message) => {
     if (message.author.bot) return false;
 
 
-    const handler = messageHandlers.get(message.toString().toLowerCase())
-    if (handler) {
-        handler.execute(client, message)
-    }
+    //const handler = messageHandlers.get(message.toString().toLowerCase())
+    //if (handler) {
+    //   handler.execute(client, message)
+    //}
 
 
     // Matches double brackets [[string]] and maps to the the value(s) inside
@@ -43,7 +43,7 @@ client.on("messageCreate", async (message) => {
 
     matches.forEach(async match => {
         const page = await getPage(match);
-        if (page === null) {
+        if (page == null) {
             message.reply("Page not found! Did you make a typo?");
             return false;
         }
