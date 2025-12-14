@@ -1,8 +1,6 @@
 const https = require("https");
 
 
-const WIKI_URL = "https://www.poewiki.net/w/api.php";
-
 
 const get = (url) => {
     return new Promise((resolve, reject) => {
@@ -26,13 +24,13 @@ const get = (url) => {
     });
 }
 
-const getPage = async (page) => {
+const getPage = async (page, url) => {
     const query = new URLSearchParams({
         action: "opensearch",
         format: "json",
         search: page,
     });
-    const fullUrl = `${WIKI_URL}?${query.toString()}`;
+    const fullUrl = `${url}?${query.toString()}`;
 
     const rawData = await get(fullUrl);
     const data = JSON.parse(rawData);

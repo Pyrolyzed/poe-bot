@@ -22,24 +22,35 @@ for (const file of messageFiles) {
     }
 }
 
+const POE1_WIKI_URL = "https://www.poewiki.net/w/api.php";
+const POE2_WIKI_URL = "https://www.poe2wiki.net/w/api.php"
+
 client.once(Events.ClientReady, client => {
-    console.log(`Logged in as ${client.user.tag}`);
+    console.log(`Logged in as ${client.user.tag}`)
 });
 
 client.on("messageCreate", async (message) => {
-    if (message.author.bot) return false;
+    if (message.author.bot) return false
 
     // Matches double brackets [[string]] and maps to the the value(s) inside
-    const matches = [...message.toString().matchAll(/\[\[([^[\]]+?)\]\]/g)].map(m => m[1]);
-
+    const squareMatches = [...message.toString().matchAll(/\[\[([^[\]]+?)\]\]/g)].map(m => m[1])
+    const parenthesesMatches = [...message.toString().matchAll(/\(([^()]+?)\)/g)].map(m => m[1])
 
     const handler = messageHandlers.get(message.toString().toLowerCase())
     if (handler) {
         handler.execute(client, message)
     }
 
-    matches.forEach(async match => {
-        const page = await getPage(match);
+    squareMatches.forEach(async match => {
+        const page = await getPage(match, POE1_WIKI_URL);
+        if (page == null) {
+            message.reply("Page not found! Did you make a typo?");
+            return false;
+        }
+        message.reply(page);
+    });
+    parenthesesMatches.forEach(async match => {
+        const page = await getPage(match, POE2_WIKI_URL);
         if (page == null) {
             message.reply("Page not found! Did you make a typo?");
             return false;
