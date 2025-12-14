@@ -29,6 +29,17 @@ client.once(Events.ClientReady, client => {
     console.log(`Logged in as ${client.user.tag}`)
 });
 
+async function replyWithPage(message, matches, url) {
+    matches.forEach(async match => {
+        const page = await getPage(match, url);
+        if (page == null) {
+            message.reply("Page not found! Did you make a typo?");
+            return false;
+        }
+        message.reply(page);
+    })
+}
+
 client.on("messageCreate", async (message) => {
     if (message.author.bot) return false
 
@@ -41,22 +52,8 @@ client.on("messageCreate", async (message) => {
         handler.execute(client, message)
     }
 
-    squareMatches.forEach(async match => {
-        const page = await getPage(match, POE1_WIKI_URL);
-        if (page == null) {
-            message.reply("Page not found! Did you make a typo?");
-            return false;
-        }
-        message.reply(page);
-    });
-    parenthesesMatches.forEach(async match => {
-        const page = await getPage(match, POE2_WIKI_URL);
-        if (page == null) {
-            message.reply("Page not found! Did you make a typo?");
-            return false;
-        }
-        message.reply(page);
-    });
+    await replyWithPage(message, squareMatches, POE1_WIKI_URL)
+    await replyWithPage(message, parenthesesMatches, POE2_WIKI_URL)
 });
 
 client.login(token);
