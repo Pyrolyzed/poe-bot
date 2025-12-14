@@ -45,7 +45,7 @@ client.on("messageCreate", async (message) => {
 
     // Matches double brackets [[string]] and maps to the the value(s) inside
     const squareMatches = [...message.toString().matchAll(/\[\[([^[\]]+?)\]\]/g)].map(m => m[1])
-    const parenthesesMatches = [...message.toString().matchAll(/\(([^()]+?)\)/g)].map(m => m[1])
+    const parenthesesMatches = [...message.toString().matchAll(/\(\(([^()]+?)\)\)/g)].map(m => m[1])
 
     const handler = messageHandlers.get(message.toString().toLowerCase())
     if (handler) {
