@@ -53,6 +53,11 @@ client.on("messageCreate", async (message) => {
         handler.execute(client, message)
     }
 
+    if (message.toString().toLowerCase() === "!!tradeorssf") {
+        const doSSF = Math.floor(Math.random() * 10) < 5
+        message.reply("Play " + doSSF ? "SSF" : "Trade")
+    }
+
     await replyWithPage(message, squareMatches, POE1_WIKI_URL)
     await replyWithPage(message, parenthesesMatches, POE2_WIKI_URL)
 });
