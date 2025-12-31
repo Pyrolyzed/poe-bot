@@ -54,8 +54,8 @@ client.on("messageCreate", async (message) => {
     }
 
     if (message.toString().toLowerCase() === "!!tradeorssf") {
-        const doSSF = Math.floor(Math.random() * 10) < 5
-        message.reply("Play " + doSSF ? "SSF" : "Trade")
+        const doSSF = Math.floor((Math.random() * 10) + 1) <= 5
+        message.reply("Play " + (doSSF ? "SSF" : "Trade"))
     }
 
     await replyWithPage(message, squareMatches, POE1_WIKI_URL)
