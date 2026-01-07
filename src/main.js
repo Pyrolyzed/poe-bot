@@ -26,7 +26,7 @@ const POE1_WIKI_URL = "https://www.poewiki.net/w/api.php";
 const POE2_WIKI_URL = "https://www.poe2wiki.net/w/api.php"
 
 client.once(Events.ClientReady, client => {
-    console.log(`Logged in as ${client.user.tag}`)
+    console.log(`Logged in as ${client.user.tag}`);
 });
 
 async function replyWithPage(message, matches, url) {
@@ -37,29 +37,29 @@ async function replyWithPage(message, matches, url) {
             return false;
         }
         message.reply(page);
-    })
+    });
 }
 
 client.on("messageCreate", async (message) => {
     if (message.author.bot) return false
 
     // Matches double brackets [[string]] and maps to the the value(s) inside
-    const squareMatches = [...message.toString().matchAll(/\[\[([^[\]]+?)\]\]/g)].map(m => m[1])
+    const squareMatches = [...message.toString().matchAll(/\[\[([^[\]]+?)\]\]/g)].map(m => m[1]);
     // Same but with parentheses
-    const parenthesesMatches = [...message.toString().matchAll(/\(\(([^()]+?)\)\)/g)].map(m => m[1])
+    const parenthesesMatches = [...message.toString().matchAll(/\(\(([^()]+?)\)\)/g)].map(m => m[1]);
 
-    const handler = messageHandlers.get(message.toString().toLowerCase())
+    const handler = messageHandlers.get(message.toString().toLowerCase());
     if (handler) {
-        handler.execute(client, message)
+        handler.execute(client, message);
     }
 
     if (message.toString().toLowerCase() === "!!tradeorssf") {
-        const doSSF = Math.random() < 0.5;
-        message.reply("Play " + (doSSF ? "SSF" : "Trade"))
+        const doSSF = (Math.random() < 0.5) ? "SSF" : "Trade";
+        message.reply("Play " + doSSF);
     }
 
-    await replyWithPage(message, squareMatches, POE1_WIKI_URL)
-    await replyWithPage(message, parenthesesMatches, POE2_WIKI_URL)
+    await replyWithPage(message, squareMatches, POE1_WIKI_URL);
+    await replyWithPage(message, parenthesesMatches, POE2_WIKI_URL);
 });
 
 client.login(token);
