@@ -54,7 +54,7 @@ client.on("messageCreate", async (message) => {
     }
 
     if (message.toString().toLowerCase() === "!!tradeorssf") {
-        const doSSF = Math.floor((Math.random() * 10) + 1) <= 5
+        const doSSF = Math.random() < 0.5;
         message.reply("Play " + (doSSF ? "SSF" : "Trade"))
     }
 
