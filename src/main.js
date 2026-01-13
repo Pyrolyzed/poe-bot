@@ -1,7 +1,7 @@
 const { Client, Events, GatewayIntentBits } = require("discord.js");
 const { token } = require("../config.json");
 const { getPage } = require("./lib/wiki");
-const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent ] });
+const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent] });
 
 client.once(Events.ClientReady, client => {
     console.log(`Logged in as ${client.user.tag}`);
