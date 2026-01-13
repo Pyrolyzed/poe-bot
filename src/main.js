@@ -6,6 +6,7 @@ const ascendancies = require("../data/ascendancies.json");
 const skills = require("../data/skills.json");
 const getRandomValue = require("./lib/random");
 const { getPage } = require("./lib/wiki");
+const { getRandomValues } = require("crypto");
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent] });
 
 const messageHandlers = new Map();
@@ -62,11 +63,17 @@ client.on("messageCreate", async (message) => {
     }
 
     if (message.toString().toLowerCase() === "!!randomskill") {
-        message.reply(getRandomValue(skills));
+        const skill = getRandomValue(skills);
+        const page = await getPage(skill, POE1_WIKI_URL);
+        console.log(skill)
+        message.reply("Random skill: " + page);
     }
 
     if (message.toString().toLowerCase() === "!!randomascendancy") {
-        message.reply(getRandomValue(ascendancies));
+        const ascendancy = getRandomValue(ascendancies);
+        const page = await getPage(ascendancy, POE1_WIKI_URL);
+        console.log(ascendancy)
+        message.reply("Random ascendancy: " + page);
     }
 
     await replyWithPage(message, squareMatches, POE1_WIKI_URL);
