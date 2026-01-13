@@ -63,6 +63,7 @@ client.on("messageCreate", async (message) => {
     }
 
     if (message.toString().toLowerCase() === "!!randomskill") {
+        console.log(skills)
         const skill = getRandomValue(skills);
         const page = await getPage(skill, POE1_WIKI_URL);
         console.log(skill)
