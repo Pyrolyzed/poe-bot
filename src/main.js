@@ -1,12 +1,11 @@
 const fs = require("fs");
 const path = require("path");
-const { Client, Events, GatewayIntentBits } = require("discord.js");
+const { Client, Events, GatewayIntentBits, MessageFlags } = require("discord.js");
 const { token } = require("../config.json");
 const ascendancies = require("../data/ascendancies.json");
 const skills = require("../data/skills.json");
 const { getRandomValue } = require("./lib/random");
 const { getPage } = require("./lib/wiki");
-const { getRandomValues } = require("crypto");
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent] });
 
 const messageHandlers = new Map();
@@ -26,6 +25,23 @@ for (const file of messageFiles) {
     }
 }
 
+client.commands = new Collection();
+const folderPath = path.join(__dirname, "commands");
+const commandFolder = fs.readdirSync(folderPath);
+
+for (const folder of commandFolders) {
+    const commandsPath = path.join(folderPath, folder);
+    const commandFiles = fs.readdirSync(commandsPath).filter((file) => file.endsWith(".js"));
+    for (const file of commandFiles) {
+        const filePath = path.join(commandsPath, file);
+        const command = require(filePath);
+        if ("data" in command && "execute" in command) {
+            client.commands.set(command.data.name, command);
+        } else {
+            console.log(`Command at ${filePath} is missing required data`);
+        }
+    }
+}
 const POE1_WIKI_URL = "https://www.poewiki.net/w/api.php";
 const POE2_WIKI_URL = "https://www.poe2wiki.net/w/api.php"
 
@@ -69,13 +85,35 @@ client.on("messageCreate", async (message) => {
     }
 
     if (message.toString().toLowerCase() === "!!randomascendancy") {
-        const ascendancy = getRandomValue(ascendancies.ascendancies);
-        const page = await getPage(ascendancy, POE1_WIKI_URL);
-        message.reply("Random ascendancy: " + page);
     }
 
     await replyWithPage(message, squareMatches, POE1_WIKI_URL);
     await replyWithPage(message, parenthesesMatches, POE2_WIKI_URL);
 });
+client.on(Events.InteractionCreate, async (interaction) => {
+    if (!interaction.isChatInputCommand()) return;
+    const command = interaction.client.commands.get(interaction.commandName);
 
+    if (!command) {
+        console.error(`No command matching ${interaction.commandName} was found.`);
+        return;
+    }
+
+    try {
+        await command.execute(interaction);
+    } catch (error) {
+        console.error(error);
+        if (interaction.replied || interaction.deferred) {
+            await interaction.followUp({
+                content: 'There was an error while executing this command!',
+                flags: MessageFlags.Ephemeral,
+            });
+        } else {
+            await interaction.reply({
+                content: 'There was an error while executing this command!',
+                flags: MessageFlags.Ephemeral,
+            });
+        }
+    }
+});
 client.login(token);
