@@ -1,6 +1,7 @@
 const skills = require("../../../data/skills.json");
 const { getPage } = require("../../lib/wiki")
 const { getRandomValue } = require("../../lib/random")
+const { SlashCommandBuilder } = require("discord.js");
 
 module.exports = {
     data: new SlashCommandBuilder().setName("randomskill").setDescription("Roll for a random skill"),

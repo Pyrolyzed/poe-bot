@@ -1,6 +1,7 @@
 const ascendancies = require("../../../data/ascendancies.json");
-const { getPage } = require("../../lib/wiki")
-const { getRandomValue } = require("../../lib/random")
+const { getPage } = require("../../lib/wiki");
+const { getRandomValue } = require("../../lib/random");
+const { SlashCommandBuilder } = require("discord.js");
 
 module.exports = {
     data: new SlashCommandBuilder().setName("randomascendancy").setDescription("Roll for a random ascendancy"),
