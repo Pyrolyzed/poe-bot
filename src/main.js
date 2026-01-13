@@ -1,6 +1,6 @@
 const fs = require("fs");
 const path = require("path");
-const { Client, Events, GatewayIntentBits, MessageFlags } = require("discord.js");
+const { Client, Collection, Events, GatewayIntentBits, MessageFlags } = require("discord.js");
 const { token } = require("../config.json");
 const ascendancies = require("../data/ascendancies.json");
 const skills = require("../data/skills.json");
