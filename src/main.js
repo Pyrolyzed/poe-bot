@@ -116,4 +116,5 @@ client.on(Events.InteractionCreate, async (interaction) => {
         }
     }
 });
+console.log(client.commands)
 client.login(token);
