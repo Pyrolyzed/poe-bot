@@ -1,8 +1,6 @@
 const getRandomValue = (array) => {
     const length = array.length;
-    const random = Math.floor(Math.random(length));
-    console.log(length)
-    console.log(random)
+    const random = Math.floor(Math.random() * length);
     return array[random];
 };
 
