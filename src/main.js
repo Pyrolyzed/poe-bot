@@ -2,6 +2,9 @@ const fs = require("fs");
 const path = require("path");
 const { Client, Events, GatewayIntentBits } = require("discord.js");
 const { token } = require("../config.json");
+const ascendancies = require("../data/ascendancies.json");
+const skills = require("../data/skills.json");
+const getRandomValue = require("./lib/random");
 const { getPage } = require("./lib/wiki");
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent] });
 
@@ -56,6 +59,14 @@ client.on("messageCreate", async (message) => {
     if (message.toString().toLowerCase() === "!!tradeorssf") {
         const doSSF = (Math.random() < 0.5) ? "SSF" : "Trade";
         message.reply("Play " + doSSF);
+    }
+
+    if (message.toString().toLowerCase() === "!!randomskill") {
+        message.reply(getRandomValue(skills));
+    }
+
+    if (message.toString().toLowerCase() === "!!randomascendancy") {
+        message.reply(getRandomValue(ascendancies));
     }
 
     await replyWithPage(message, squareMatches, POE1_WIKI_URL);
