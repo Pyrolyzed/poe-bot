@@ -8,6 +8,6 @@ module.exports = {
     async execute(interaction) {
         const skill = getRandomValue(skills.skills);
         const page = await getPage(skill, "https://www.poewiki.net/w/api.php");
-        message.reply("Random ascendancy: " + page);
+        await interaction.reply("Random ascendancy: " + page);
     }
 };
