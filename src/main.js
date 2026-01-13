@@ -2,8 +2,8 @@ const fs = require("fs");
 const path = require("path");
 const { Client, Events, GatewayIntentBits } = require("discord.js");
 const { token } = require("../config.json");
-const { ascendancies } = require("../data/ascendancies.json");
-const { skills } = require("../data/skills.json");
+const ascendancies = require("../data/ascendancies.json");
+const skills = require("../data/skills.json");
 const { getRandomValue } = require("./lib/random");
 const { getPage } = require("./lib/wiki");
 const { getRandomValues } = require("crypto");
@@ -63,17 +63,14 @@ client.on("messageCreate", async (message) => {
     }
 
     if (message.toString().toLowerCase() === "!!randomskill") {
-        console.log(skills)
-        const skill = getRandomValue(skills);
+        const skill = getRandomValue(skills.skills);
         const page = await getPage(skill, POE1_WIKI_URL);
-        console.log(skill)
         message.reply("Random skill: " + page);
     }
 
     if (message.toString().toLowerCase() === "!!randomascendancy") {
-        const ascendancy = getRandomValue(ascendancies);
+        const ascendancy = getRandomValue(ascendancies.ascendancies);
         const page = await getPage(ascendancy, POE1_WIKI_URL);
-        console.log(ascendancy)
         message.reply("Random ascendancy: " + page);
     }
 
