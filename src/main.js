@@ -29,7 +29,7 @@ client.commands = new Collection();
 const folderPath = path.join(__dirname, "commands");
 const commandFolder = fs.readdirSync(folderPath);
 
-for (const folder of commandFolders) {
+for (const folder of commandFolder) {
     const commandsPath = path.join(folderPath, folder);
     const commandFiles = fs.readdirSync(commandsPath).filter((file) => file.endsWith(".js"));
     for (const file of commandFiles) {
