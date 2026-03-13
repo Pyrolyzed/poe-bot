@@ -21,21 +21,39 @@ const get = (url) => {
         });
     });
 }
-
 const getPage = async (page, url) => {
-    const query = new URLSearchParams({
-        action: "opensearch",
-        format: "json",
-        search: page,
+    const searchQuery = new URLSearchParams({
+        action: "query",
+        list: "search",
+        srsearch: page,
+        format: "json"
     });
-    const fullUrl = `${url}?${query.toString()}`;
 
-    const rawData = await get(fullUrl);
-    const data = JSON.parse(rawData);
-    const matchesIndex = 3;
+    const searchData = JSON.parse(
+        await get(`${url}?${searchQuery.toString()}`)
+    );
 
-    const matches = data[matchesIndex];
-    return matches.length > 0 ? matches[0] : null;
-}
+    const results = searchData.query.search;
+    if (!results || results.length === 0) {
+        return null;
+    }
 
+    const title = results[0].title;
+
+    const resolveQuery = new URLSearchParams({
+        action: "query",
+        titles: title,
+        redirects: "1",
+        format: "json"
+    });
+
+    const resolveData = JSON.parse(
+        await get(`${url}?${resolveQuery.toString()}`)
+    );
+
+    const pages = resolveData.query.pages;
+    const pageObject = Object.values(pages)[0];
+
+    return `${url.replace("/w/api.php", "")}/wiki/${encodeURIComponent(pageObject.title)}`;
+};
 module.exports = { get, getPage }

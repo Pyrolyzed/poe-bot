@@ -1,6 +1,7 @@
 {
     "version": 1.0,
     "skills": [
+        "Holy Hammers",
         "Absolution",
         "Ambush",
         "Ancestral Cry",
@@ -197,7 +198,10 @@
         "Summon Skeletons",
         "Summon Stone Golem",
         "Sunder",
-        "Sweep",
+        "Holy Sweep",
+        "Divine Blast",
+        "Holy Strike",
+        "Shield of Light",
         "Swordstorm",
         "Tectonic Slam",
         "Thunderstorm",
