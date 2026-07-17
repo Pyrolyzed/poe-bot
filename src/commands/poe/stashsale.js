@@ -16,6 +16,6 @@ module.exports = {
             .filter((_, el) => $(el).text().includes("Stash Tab"))
             .siblings(".card-body");
         const timestamp = body.find("[data-displaytime]").attr("data-displaytime");
-        await interaction.reply(`The next stash tab sale is at <t:${timestamp}:f>`);
+        await interaction.reply(`The next stash tab sale is at <t:${timestamp}:f> or <t:${timestamp}:R>`);
     }
 };
