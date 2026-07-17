@@ -116,5 +116,4 @@ client.on(Events.InteractionCreate, async (interaction) => {
         }
     }
 });
-console.log("Commands:" + client.commands["randomascendancy"])
 client.login(token);

@@ -1,0 +1,1 @@
+Start-Process node -ArgumentList "." -WindowStyle Hidden
