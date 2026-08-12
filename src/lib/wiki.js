@@ -54,6 +54,6 @@ const getPage = async (page, url) => {
     const pages = resolveData.query.pages;
     const pageObject = Object.values(pages)[0];
 
-    return `${url.replace("/w/api.php", "")}/wiki/${encodeURIComponent(pageObject.title)}`;
+    return `${url.replace("/w/api.php", "")}/wiki/${encodeURIComponent(pageObject.title).replaceAll("%20", "_")}`;
 };
 module.exports = { get, getPage }
