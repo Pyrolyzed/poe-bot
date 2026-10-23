@@ -47,7 +47,7 @@ const POE1_WIKI_URL = "https://www.poewiki.net/w/api.php";
 const POE2_WIKI_URL = "https://www.poe2wiki.net/w/api.php"
 
 const SALE_CHANNEL_ID = "1527799375961657444";
-const SALE_ROLE_ID = "1527797590756691999"; // Stream Notifications
+const SALE_ROLE_ID = "1563001465625247876"; // Stream Notifications
 const SALE_CHECK_MS = 60 * 60 * 1000;
 let scheduledSale = null;
 
