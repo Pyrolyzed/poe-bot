@@ -6,6 +6,7 @@ const ascendancies = require("../data/ascendancies.json");
 const skills = require("../data/skills.json");
 const { getRandomValue } = require("./lib/random");
 const { getPage } = require("./lib/wiki");
+const { getNextSale } = require("./commands/poe/stashsale");
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent] });
 
 const messageHandlers = new Map();
@@ -45,8 +46,36 @@ for (const folder of commandFolder) {
 const POE1_WIKI_URL = "https://www.poewiki.net/w/api.php";
 const POE2_WIKI_URL = "https://www.poe2wiki.net/w/api.php"
 
+const SALE_CHANNEL_ID = "1527799375961657444";
+const SALE_ROLE_ID = "1527797590756691999"; // Stream Notifications
+const SALE_CHECK_MS = 60 * 60 * 1000;
+let scheduledSale = null;
+
+// Hourly poll; once a sale starts within the next hour, set a timer to ping at its start time.
+// shortcut: timer lives in memory, so a restart inside that final hour skips the ping; persist it if that matters.
+async function checkStashSale() {
+    try {
+        const { timestamp, label } = await getNextSale();
+        const delay = timestamp * 1000 - Date.now();
+        if (label !== "Starts in" || timestamp === scheduledSale || delay < 0 || delay > SALE_CHECK_MS) return;
+        scheduledSale = timestamp;
+        setTimeout(() => {
+            client.channels.fetch(SALE_CHANNEL_ID)
+                .then(channel => channel.send({
+                    content: `<@&${SALE_ROLE_ID}> A stash tab sale has started! https://www.pathofexile.com/shop`,
+                    allowedMentions: { roles: [SALE_ROLE_ID] },
+                }))
+                .catch(error => console.error("Stash sale ping failed:", error));
+        }, delay);
+    } catch (error) {
+        console.error("Stash sale check failed:", error);
+    }
+}
+
 client.once(Events.ClientReady, client => {
     console.log(`Logged in as ${client.user.tag}`);
+    checkStashSale();
+    setInterval(checkStashSale, SALE_CHECK_MS);
 });
 
 async function replyWithPage(message, matches, url) {
