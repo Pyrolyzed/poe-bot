@@ -1,7 +1,7 @@
 const https = require("https");
 const crypto = require("crypto");
 const cheerio = require("cheerio");
-const { EmbedBuilder, escapeMarkdown } = require("discord.js");
+const { AttachmentBuilder, EmbedBuilder, escapeMarkdown } = require("discord.js");
 
 const get = (url) => {
   return new Promise((resolve, reject) => {
@@ -191,6 +191,43 @@ const buildDivCardEmbed = ($, item, url, link) => {
   return embed;
 };
 
+const getImage = (url) => {
+  return new Promise((resolve, reject) => {
+    https.get(url, response => {
+      if (response.statusCode !== 200 || !/^image\//.test(response.headers["content-type"] || "")) {
+        response.resume();
+        reject(new Error(`HTTP ${response.statusCode} for ${url}`));
+        return;
+      }
+      const chunks = [];
+      response.on("data", chunk => chunks.push(chunk));
+      response.on("end", () => resolve(Buffer.concat(chunks)));
+      response.on("error", reject);
+    }).on("error", reject);
+  });
+};
+
+// Discord's image proxy gets a Cloudflare challenge from poewiki.net, so wiki images are
+// downloaded here and sent as an attachment. Returns a message payload for reply().
+const getPageMessage = async (page, url) => {
+  const embed = await getPageEmbed(page, url);
+  const files = [];
+
+  const thumbnail = embed.data.thumbnail?.url;
+  if (thumbnail) {
+    try {
+      const name = `thumbnail${(thumbnail.match(/\.(png|jpe?g|gif|webp)$/i) || [".png"])[0].toLowerCase()}`;
+      files.push(new AttachmentBuilder(await getImage(thumbnail), { name }));
+      embed.setThumbnail(`attachment://${name}`);
+    } catch (error) {
+      console.error(`Wiki thumbnail download failed for ${page.title}:`, error.message);
+      embed.setThumbnail(null);
+    }
+  }
+
+  return { embeds: [embed], files };
+};
+
 // Embed for a wiki page: the item tooltip for items and gems, otherwise the intro summary.
 const getPageEmbed = async (page, url) => {
   const [item, summary] = await Promise.all([
@@ -211,4 +248,4 @@ const getPageEmbed = async (page, url) => {
   return embed;
 };
 
-module.exports = { get, getPage, getPageEmbed }
+module.exports = { get, getPage, getPageEmbed, getPageMessage }
