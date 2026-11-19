@@ -3,7 +3,7 @@ const path = require("path");
 const { Client, Collection, Events, GatewayIntentBits, MessageFlags } = require("discord.js");
 const { token } = require("../config.json");
 const { getRandomValue } = require("./lib/random");
-const { getPage } = require("./lib/wiki");
+const { getPage, getPageEmbed } = require("./lib/wiki");
 const { getNextSale } = require("./commands/poe/stashsale");
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent] });
 
@@ -77,14 +77,22 @@ client.once(Events.ClientReady, client => {
 });
 
 async function replyWithPage(message, matches, url) {
-  matches.forEach(async match => {
-    const page = await getPage(match, url);
-    if (page == null) {
-      message.reply("Page not found! Did you make a typo?");
-      return false;
+  for (const match of matches) {
+    try {
+      const page = await getPage(match, url);
+      if (page == null) {
+        await message.reply("Page not found! Did you make a typo?");
+        continue;
+      }
+      const embed = await getPageEmbed(page, url).catch(error => {
+        console.error(`Wiki embed failed for ${page.title}:`, error);
+        return null;
+      });
+      await message.reply(embed ? { embeds: [embed] } : page.url);
+    } catch (error) {
+      console.error(`Wiki lookup failed for ${match}:`, error);
     }
-    message.reply(page);
-  });
+  }
 }
 
 client.on("messageCreate", async (message) => {
